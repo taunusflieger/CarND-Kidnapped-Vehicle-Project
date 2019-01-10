@@ -20,7 +20,7 @@ using namespace std;
 // number of particles
 #define NUM_PARTICLES   500
 #define EPS 1e-6
-#define VERBOSE_LEVEL 5
+
 
 
 double  ParticleFilter::CalcMGP(double asso_x, double asso_y, double obs_x, double obs_y, double std_x, double std_y) {
