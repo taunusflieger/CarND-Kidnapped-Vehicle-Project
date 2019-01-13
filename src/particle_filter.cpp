@@ -60,7 +60,6 @@ void ParticleFilter::init(double x, double y, double theta, double std[]) {
 
 		particles_[i] = Particle {i, n_x, n_y, n_theta, 1.0};
 	}
-
   is_initialized_ = true;
 }
 
@@ -94,7 +93,7 @@ void ParticleFilter::prediction(double delta_t, double std_pos[], double velocit
 	}
 }
 
-void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::vector<LandmarkObs>& observations) {
+void ParticleFilter::dataAssociation(vector<LandmarkObs> predicted, vector<LandmarkObs>& observations) {
 	for (auto &obs : observations) {
 		double min_dist = __DBL_MAX__;
 
@@ -113,20 +112,20 @@ void ParticleFilter::dataAssociation(std::vector<LandmarkObs> predicted, std::ve
 
 
 void ParticleFilter::updateWeights(double sensor_range, double std_landmark[], 
-		const std::vector<LandmarkObs> &observations, const Map &map_landmarks) {
+		const vector<LandmarkObs> &observations, const Map &map_landmarks) {
 	
 	for (auto &particle : particles_) {
 
 		//landmarks within sensor's range
-		std::vector<LandmarkObs> predictions;
+		vector<LandmarkObs> predictions;
 
 		//observations in MAP's coordinate system
-		std::vector<LandmarkObs> transformation_obs;
+		vector<LandmarkObs> transformation_obs;
 
 		//variables needed for setAssociation
-		std::vector<int> associations;
-		std::vector<double> sense_x;
-		std::vector<double> sense_y;
+		vector<int> associations;
+		vector<double> sense_x;
+		vector<double> sense_y;
 
 		//
     	// Step 1: Get all landmarks within the sensor range
@@ -211,9 +210,8 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 void ParticleFilter::resample() {
 	//final vector with resampled particles
-	std::vector<Particle> resampled_particles;
-	std::vector<double> weights;
-	
+	vector<Particle> resampled_particles;
+	vector<double> weights;
 	
 	random_device dev;
 	mt19937 gen(dev());
@@ -229,13 +227,14 @@ void ParticleFilter::resample() {
 	}
 
 	//initial index is initialized uniformly
-	std::uniform_int_distribution<int> index_distribution(0, num_particles_-1);
-	std::uniform_real_distribution<double> beta_distribution(0, 2 * weight_max);
+	uniform_int_distribution<int> index_distribution(0, num_particles_-1);
+	uniform_real_distribution<double> beta_distribution(0, 2 * weight_max);
 
     int index = index_distribution(gen);
 	double beta = 0.0;
 
-	//resampling wheel
+	// resampling wheel to replace particles with
+	// low importance weight
 	for (int i=0; i < num_particles_; ++i) {
 		beta += beta_distribution(gen);
 
@@ -250,8 +249,8 @@ void ParticleFilter::resample() {
 }
 
 
-void ParticleFilter::SetAssociations(Particle& particle, const std::vector<int>& associations, 
-                                     const std::vector<double>& sense_x, const std::vector<double>& sense_y)
+void ParticleFilter::SetAssociations(Particle& particle, const vector<int>& associations, 
+                                     const vector<double>& sense_x, const vector<double>& sense_y)
 {
     //particle: the particle to assign each listed association, and association's (x,y) world coordinates mapping to
     // associations: The landmark id that goes along with each listed association

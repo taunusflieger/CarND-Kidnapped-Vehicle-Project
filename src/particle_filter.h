@@ -6,8 +6,7 @@
  *      Author: Tiffany Huang
  */
 
-#ifndef PARTICLE_FILTER_H_
-#define PARTICLE_FILTER_H_
+#pragma once
 
 #include "helper_functions.h"
 
@@ -26,18 +25,6 @@ struct Particle {
 
 
 class ParticleFilter {
-	
-	// Number of particles to draw
-	int num_particles_; 
-	
-	// Flag, if filter is initialized
-	bool is_initialized_;
-	
-	/**
-	 * calculate multivariate Gaussian probability
-	 */
-	double CalcMGP(double asso_x, double asso_y, double obs_x, double obs_y, double std_x, double std_y);
-
 public:
 	// Set of current particles
 	std::vector<Particle> particles_;
@@ -113,11 +100,20 @@ public:
 	/**
 	* initialized Returns whether particle filter is initialized yet or not.
 	*/
-	const bool initialized() const {
-		return is_initialized_;
-	}
+	const bool initialized() const {return is_initialized_;}
+
+
+private:	
+	// Number of particles to draw
+	int num_particles_; 
+	
+	// Flag, if filter is initialized
+	bool is_initialized_;
+	
+	/**
+	 * calculate multivariate Gaussian probability
+	 */
+	double CalcMGP(double asso_x, double asso_y, double obs_x, double obs_y, double std_x, double std_y);
+
 };
 
-
-
-#endif /* PARTICLE_FILTER_H_ */
