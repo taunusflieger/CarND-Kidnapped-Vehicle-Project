@@ -116,13 +116,13 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 	
 	for (auto &particle : particles_) {
 
-		//landmarks within sensor's range
+		// landmarks within sensor's range
 		vector<LandmarkObs> predictions;
 
-		//observations in MAP's coordinate system
+		// observations in MAP's coordinate system
 		vector<LandmarkObs> transformation_obs;
 
-		//variables needed for setAssociation
+		// variables needed for setAssociation
 		vector<int> associations;
 		vector<double> sense_x;
 		vector<double> sense_y;
@@ -130,7 +130,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		//
     	// Step 1: Get all landmarks within the sensor range
     	//
-		//only consider landmarks within sensor range
+		// only consider landmarks within sensor range
 		for (auto map_landmark : map_landmarks.landmark_list) {
 
 			double distance_to_landmark = dist(map_landmark.x_f, map_landmark.y_f, particle.x, particle.y);
@@ -148,7 +148,7 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
     	//
 		for (auto observation : observations) {
 
-			//observation in MAP's coordinate system
+			// observation in MAP's coordinate system
 			LandmarkObs observation_map;
 
 			observation_map.id = observation.id;
@@ -165,22 +165,22 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 		//
 		// Step 3: Associate observations to landmarks within the sensor range
 		//
-		//find closest landmark to each observation
-		//id of transformation_obs is set to id of closest landmark inside predictions
+		// find closest landmark to each observation
+		// id of transformation_obs is set to id of closest landmark inside predictions
 		dataAssociation(predictions, transformation_obs);
 
 		particle.weight = 1.0; //re-initialize
 
-		//landmark measurement uncertainty std_x [m], std_y [m]
+		//l andmark measurement uncertainty std_x [m], std_y [m]
 		double std_x = std_landmark[0];
 		double std_y = std_landmark[1];
 
-		//for each observation...
+		//f or each observation...
 		for (auto observation : transformation_obs) {
 
 			int closest_landmark_index = 0;
 
-			//find closest landmark
+			// find closest landmark
 			for (int i = 0; i < predictions.size(); ++i) {
 				if (predictions[i].id == observation.id)  {
 					closest_landmark_index = i;
@@ -188,10 +188,10 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 				}
 			}
 
-			//matching landmark in the map
+			// matching landmark in the map
 			LandmarkObs association = predictions[closest_landmark_index];
 
-			//push back association info to display it in the simulator
+			// push back association info to display it in the simulator
 			associations.push_back(association.id);
 			sense_x.push_back(observation.x);
 			sense_y.push_back(observation.y);
@@ -209,14 +209,14 @@ void ParticleFilter::updateWeights(double sensor_range, double std_landmark[],
 
 
 void ParticleFilter::resample() {
-	//final vector with resampled particles
+	// final vector with resampled particles
 	vector<Particle> resampled_particles;
 	vector<double> weights;
 	
 	random_device dev;
 	mt19937 gen(dev());
 
-	//get weights from current particles
+	// get weights from current particles
 	double weight_max = 0;
 	for (auto p : particles_) {
 		weights.push_back(p.weight);
@@ -226,7 +226,7 @@ void ParticleFilter::resample() {
 			weight_max = p.weight;
 	}
 
-	//initial index is initialized uniformly
+	// initial index is initialized uniformly
 	uniform_int_distribution<int> index_distribution(0, num_particles_-1);
 	uniform_real_distribution<double> beta_distribution(0, 2 * weight_max);
 
@@ -252,12 +252,12 @@ void ParticleFilter::resample() {
 void ParticleFilter::SetAssociations(Particle& particle, const vector<int>& associations, 
                                      const vector<double>& sense_x, const vector<double>& sense_y)
 {
-    //particle: the particle to assign each listed association, and association's (x,y) world coordinates mapping to
+    // particle: the particle to assign each listed association, and association's (x,y) world coordinates mapping to
     // associations: The landmark id that goes along with each listed association
     // sense_x: the associations x mapping already converted to world coordinates
     // sense_y: the associations y mapping already converted to world coordinates
 
- 	//Clear the previous associations
+ 	// Clear the previous associations
     particle.associations.clear();
     particle.sense_x.clear();
     particle.sense_y.clear();
